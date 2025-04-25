@@ -1,58 +1,68 @@
 ﻿
 namespace ContaCorrente.ConsoleApp
 {
+    
+
     public class ContaCorrente
     {
+        // atributos
         public int numeroConta;
-        public int registroDeMovimentacoes = 0;
         public decimal limite;
         public decimal saldo;
-        public decimal saldoInicial;
-        public decimal[] movimentacoes = new decimal[10];
+        public Movimentacao[] movimentacoes;
+        int contadorMovimentacoes = 0;
 
-
-        public decimal Sacar(decimal valor)
+        // métodos
+        public void Sacar(decimal valor)
         {
-            saldo = saldo - valor;
-            movimentacoes[registroDeMovimentacoes] = - valor;
-            return saldo;
+            if (valor <= saldo + limite) 
+            {
+                saldo -= valor;
+
+                Movimentacao novaMovimentacao = new Movimentacao();
+                novaMovimentacao.valor = valor;
+                novaMovimentacao.tipo = "Débito";
+
+                movimentacoes[contadorMovimentacoes] = novaMovimentacao;
+                contadorMovimentacoes++;
+            }
         }
 
-        public decimal Depositar(decimal valor)
+        public void Depositar(decimal valor)
         {
-            saldo = saldo + valor;
-            movimentacoes[registroDeMovimentacoes] = valor;
-            return saldo;
+            saldo += valor;
+
+            Movimentacao novaMovimentacao = new Movimentacao[];
+            novaMovimentacao.valor = valor;
+            novaMovimentacao.tipo = "Crédito";
+
+            movimentacoes[contadorMovimentacoes] = novaMovimentacao;
+            contadorMovimentacoes++;
         }
 
-        public decimal TransferirPara(ContaCorrente contaDestino, decimal valor)
+        public void TransferirPara(ContaCorrente contaDestino, decimal valor)
         {
-            saldo = saldo - valor;
-            contaDestino.saldo = contaDestino.saldo + valor;
-            movimentacoes[registroDeMovimentacoes] = - valor;
-            return saldo;
+            contaDestino.Depositar(valor);
+            this.Sacar(valor);
         }
 
         public void ExibirExtrato()
         {
-            Console.Write($"Número da conta: {numeroConta}");
-            Console.WriteLine();
-            Console.Write($"Limite: {limite}");
-            Console.WriteLine();
-            Console.Write($"Saldo inicial: {saldoInicial}");
-            
+            Console.WriteLine("Extrato da Conta #" + this.numeroConta);
+
+            Console.WriteLine("Saldo: " + this.saldo);
+
             Console.WriteLine();
 
             for (int i = 0; i < movimentacoes.Length; i++)
             {
-                if (movimentacoes[i] != 0)
+                Movimentacao movimentacaoAtual = movimentacoes[i];
+
+                if (movimentacaoAtual != null)
                 {
-                    Console.WriteLine($"Movimentações: {movimentacoes[i]}");
+                    Console.WriteLine(movimentacaoAtual.ExibirMovimentacao());
                 }
             }
-            
-            Console.Write($"Saldo Atual: {saldo}");
-            Console.WriteLine();
         }
     }
 }
