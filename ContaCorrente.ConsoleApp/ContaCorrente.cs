@@ -32,7 +32,7 @@ namespace ContaCorrente.ConsoleApp
         {
             saldo += valor;
 
-            Movimentacao novaMovimentacao = new Movimentacao[];
+            Movimentacao novaMovimentacao = new Movimentacao();
             novaMovimentacao.valor = valor;
             novaMovimentacao.tipo = "Crédito";
 
